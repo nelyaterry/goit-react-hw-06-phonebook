@@ -8,10 +8,25 @@ const items = (
   { type, payload }
 ) => {
   let newState = [];
+  console.log(state);
+
   switch (type) {
     case ADD:
-      newState = [...state, payload];
-      window.localStorage.setItem("contacts", JSON.stringify(newState));
+      if (
+        !state.some(
+          (contact) =>
+            contact.name.toLowerCase().trim() === payload.name.toLowerCase()
+        )
+      ) {
+        newState = [...state, payload];
+        window.localStorage.setItem("contacts", JSON.stringify(newState));
+      } else {
+        alert(` ${payload.name} is alredy in the contacts list`);
+        newState = state;
+      }
+
+      //   newState = [...state, payload];
+      //   window.localStorage.setItem("contacts", JSON.stringify(newState));
       return newState;
 
     case DELETE:
