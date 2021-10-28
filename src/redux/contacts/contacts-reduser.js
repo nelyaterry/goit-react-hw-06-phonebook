@@ -1,53 +1,28 @@
 import { combineReducers } from "redux";
-import { ADD, DELETE, FILTER } from "./contacts-types";
+import { createReducer } from "@reduxjs/toolkit";
+import { addContact, deleteContact, changeFilter } from "./contacts-action";
 
-const localStorageContact = JSON.parse(window.localStorage.getItem("contacts"));
+const filter = createReducer("", {
+  [changeFilter]: (_, { payload }) => payload,
+});
 
-const items = (
-  state = localStorageContact ? localStorageContact : [],
-  { type, payload }
-) => {
-  let newState = [];
-  console.log(state);
-
-  switch (type) {
-    case ADD:
-      if (
-        !state.some(
-          (contact) =>
-            contact.name.toLowerCase().trim() === payload.name.toLowerCase()
-        )
-      ) {
-        newState = [...state, payload];
-        window.localStorage.setItem("contacts", JSON.stringify(newState));
-      } else {
-        alert(` ${payload.name} is alredy in the contacts list`);
-        newState = state;
-      }
-
-      //   newState = [...state, payload];
-      //   window.localStorage.setItem("contacts", JSON.stringify(newState));
-      return newState;
-
-    case DELETE:
-      newState = state.filter((contact) => contact.id !== payload);
-      window.localStorage.setItem("contacts", JSON.stringify(newState));
-      return newState;
-
-    default:
+const items = createReducer([], {
+  [addContact]: (state, { payload }) => {
+    if (
+      !state.some(
+        (contact) =>
+          contact.name.toLowerCase().trim() === payload.name.toLowerCase()
+      )
+    ) {
+      return [...state, payload];
+    } else {
+      alert(` ${payload.name} is alredy in the contacts list`);
       return state;
-  }
-};
-
-const filter = (state = "", { type, payload }) => {
-  switch (type) {
-    case FILTER:
-      return payload;
-
-    default:
-      return state;
-  }
-};
+    }
+  },
+  [deleteContact]: (state, { payload }) =>
+    state.filter((contact) => contact.id !== payload),
+});
 
 export default combineReducers({
   items: items,
