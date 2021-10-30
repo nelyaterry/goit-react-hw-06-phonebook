@@ -20,8 +20,3 @@ const Filter = () => {
 
 
 export default Filter
-
-Filter.propTypes = {
-  value: PropTypes.string,
-  changeFilter: PropTypes.func,
-};
